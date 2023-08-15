@@ -1,0 +1,153 @@
+<?php
+/** @var Template $block */
+/** @var Escaper $escaper */
+
+?>
+<section class="w-screen ml-[50%] transform -translate-x-1/2 md:ml-0 md:translate-x-0 md:w-full min-h-48 " x-data="initSliderComponent()">
+    <div class="relative sliders overflow-hidden" x-ref="sliderContainer"
+         @touchstart="handleTouchStart"
+         @touchmove="handleTouchMove"
+         @touchend="handleTouchEnd"
+
+         @mousedown.prevent="handleMouseDown"
+         @mouseup.prevent="handleMouseUp"
+
+         x-on:mouseenter="stopAutoPlay()" x-on:mouseleave="startAutoPlay()"
+    >
+        <!-- Slide items -->
+        <div class="slide-item visible overflow-hidden" x-show="active === 0"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 transform scale-90"
+             x-transition:enter-end="opacity-100 transform scale-100"
+        >
+            <img class="w-full h-auto object-cover"
+                 src="<?= $escaper->escapeHtmlAttr($block->getViewFileUrl('images/samsung-banner.webp')) ?>"
+                 alt="slide item">
+        </div>
+        <div class="slide-item overflow-hidden" x-cloak x-show="active === 1"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 transform scale-90"
+             x-transition:enter-end="opacity-100 transform scale-100"
+        >
+            <img class="w-full h-auto object-cover"
+                 src="<?= $escaper->escapeHtmlAttr($block->getViewFileUrl('images/oppo-banner.webp')) ?>"
+                 alt="slide item">
+        </div>
+        <div class="slide-item overflow-hidden" x-cloak x-show="active === 2"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 transform scale-90"
+             x-transition:enter-end="opacity-100 transform scale-100"
+        >
+            <img class="w-full h-auto object-cover"
+                 src="<?= $escaper->escapeHtmlAttr($block->getViewFileUrl('images/realme-banner.webp')) ?>"
+                 alt="slide item">
+        </div>
+
+        <!-- Back/Next buttons -->
+        <div class="absolute top-1/2 -translate-y-1/2 w-full px-2 flex justify-between items-center">
+            <button aria-label="previous" @click="scrollPrevious">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                     stroke="currentColor" class="w-8 h-8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/>
+                </svg>
+            </button>
+            <button aria-label="next" @click="scrollNext">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                     stroke="currentColor" class="w-8 h-8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Dots -->
+    <div class="flex justify-center my-2 min-h-4">
+        <template x-for="index in totalItems">
+            <div @click="scrollToIdx(index - 1)"
+                 class="w-4 h-4 mx-1 cursor-pointer rounded-full border-2 border-black bg-white"
+                 :class="{ 'bg-slate-400': active === index - 1 , 'bg-white': active !== index - 1 }"></div>
+        </template>
+    </div>
+
+</section>
+
+<script>
+    function initSliderComponent() {
+        return {
+            active: 0,
+            totalItems: 0,
+            autoPlay: true,
+            intervalId: null,
+            touchStartX: 0,
+            touchEndX: 0,
+
+            getSliderItems() {
+                return this.$refs.sliderContainer.querySelectorAll('.slide-item');
+            },
+
+            scrollPrevious() {
+                this.active = (this.active === 0) ? this.totalItems - 1 : this.active - 1;
+            },
+
+            scrollNext() {
+                this.active = (this.active === this.totalItems - 1) ? 0 : this.active + 1;
+            },
+
+            scrollToIdx(index) {
+                this.active = index;
+            },
+
+            handleTouchStart(event) {
+                this.touchStartX = event.touches[0].clientX;
+            },
+
+            handleTouchMove(event) {
+                this.touchEndX = event.touches[0].clientX;
+            },
+
+            handleTouchEnd() {
+                const touchDifference = this.touchEndX - this.touchStartX;
+                if (touchDifference > 0) {
+                    this.scrollPrevious();
+                } else if (touchDifference < 0) {
+                    this.scrollNext();
+                }
+            },
+
+            handleMouseDown(event) {
+                this.touchStartX = event.clientX;
+            },
+
+            handleMouseUp(event) {
+                this.touchEndX = event.clientX;
+
+                const touchDifference = this.touchEndX - this.touchStartX;
+                if (touchDifference > 100) {
+                    this.scrollPrevious();
+                } else if (touchDifference < -100) {
+                    this.scrollNext();
+                }
+            },
+
+            stopAutoPlay() {
+                this.autoPlay = false;
+                clearInterval(this.intervalId);
+            },
+
+            startAutoPlay() {
+                this.autoPlay = true;
+                this.intervalId = setInterval(() => {
+                    this.scrollNext();
+                }, 4000);
+            },
+
+            init() {
+                let slides = this.getSliderItems();
+                if (slides) {
+                    this.totalItems = slides.length;
+                }
+                this.startAutoPlay();
+            },
+        };
+    }
+</script>

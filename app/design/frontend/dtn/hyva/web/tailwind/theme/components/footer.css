@@ -1,0 +1,7 @@
+.page-footer{
+    @apply bg-black text-white;
+
+    a {
+        @apply w-fit hover:underline;
+    }
+}

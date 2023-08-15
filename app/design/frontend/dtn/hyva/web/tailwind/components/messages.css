@@ -1,0 +1,30 @@
+.page.messages {
+    @apply sticky top-0 z-20;
+
+    .messages
+    section#messages {
+        @apply container mx-auto py-3;
+    }
+}
+
+.message {
+    @apply flex items-center justify-between w-full p-2 bg-gray-600 shadow rounded text-white mb-2;
+
+    &.error {
+        @apply bg-red-500;
+    }
+
+    &.success {
+        @apply bg-green-500;
+    }
+
+    &.info,
+    &.warning,
+    &.notice {
+        @apply bg-yellow-500;
+    }
+
+    a {
+        @apply underline
+    }
+}
