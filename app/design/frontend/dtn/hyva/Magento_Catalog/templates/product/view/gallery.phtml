@@ -63,15 +63,13 @@ $productName = $block->getProduct()->getName();
         <div class="self-center w-full flex items-center">
             <button
                 aria-label="<?= $escaper->escapeHtml(__('Previous')) ?>"
-                class="mr-4 text-black rounded-full p-2 outline-none focus:outline-none flex-none"
-                @click="scrollPreviousMainImg"
+                class=" text-black rounded-full p-2 outline-none focus:outline-none flex-none"
+                @click="scrollPreviousImg"
             ><?= $heroicons->chevronLeftHtml() ?></button>
 
             <div class="relative self-center w-full"
                  @touchstart="handleTouchStart"
                  @touchmove="handleTouchMove"
-
-
                  x-transition:enter="ease-out duration-500"
                  x-transition:enter-start="opacity-0"
                  x-transition:enter-end="opacity-100"
@@ -139,8 +137,8 @@ $productName = $block->getProduct()->getName();
 
             <button
             aria-label="<?= $escaper->escapeHtml(__('Next')) ?>"
-            class="ml-4 text-black p-2 rounded-full outline-none focus:outline-none flex-none"
-            @click="scrollNextMainImg"
+            class="text-black p-2 rounded-full outline-none focus:outline-none flex-none"
+            @click="scrollNextImg"
             >
             <?= $heroicons->chevronRightHtml() ?>
             </button>
@@ -470,11 +468,11 @@ $productName = $block->getProduct()->getName();
                 return this.active + 1 === this.itemCount ? 0 : this.active + 1;
             },
 
-            scrollPreviousMainImg() {
+            scrollPreviousImg() {
                 let index = this.getPreviousIndex()
                 this.active = index;
             },
-            scrollNextMainImg() {
+            scrollNextImg() {
                 let index = this.getNextIndex()
                 this.active = index;
             },
